@@ -6,6 +6,14 @@ const api = {
 const searchbox = document.querySelector('.search-box');
 searchbox.addEventListener('keypress', setQuery);
 
+// Set current date when the page loads
+document.addEventListener("DOMContentLoaded", () => {
+    let now = new Date();
+    let date = document.querySelector('.location .date');
+    date.innerText = dateBuilder(now);
+});
+
+
 function setQuery(evt) {
   if (evt.key === "Enter") {
     getResults(searchbox.value);
