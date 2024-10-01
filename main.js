@@ -22,10 +22,11 @@ function fetchCities() {
         fetch(`${api.base}find?q=${query}&appid=${api.key}&units=metric`)
             .then(response => response.json())
             .then(data => {
-                showSuggestions(data._embedded["city:search-results"]);
+                showSuggestions(data.list);
             })
             .catch(error => {
                 console.error("Error fetching city suggestions:", error);
+                suggestions.innerHTML = ""; // Clear suggestions if there is an error
             });
     } else {
         suggestions.innerHTML = ""; // Clear suggestions if the input is empty
@@ -34,17 +35,19 @@ function fetchCities() {
 
 function showSuggestions(cities) {
     suggestions.innerHTML = ""; // Clear previous suggestions
-    cities.forEach(city => {
-        const suggestion = document.createElement('div');
-        suggestion.innerText = city.matching_full_name;
-        suggestion.classList.add('suggestion-item');
-        suggestion.addEventListener('click', () => {
-            searchbox.value = city.matching_full_name; // Set input to selected city
-            suggestions.innerHTML = ""; // Clear suggestions
-            getResults(city._embedded["city:item"].name); // Fetch weather for selected city
+    if (cities) {
+        cities.forEach(city => {
+            const suggestion = document.createElement('div');
+            suggestion.innerText = `${city.name}, ${city.sys.country}`; // Display city name and country
+            suggestion.classList.add('suggestion-item');
+            suggestion.addEventListener('click', () => {
+                searchbox.value = suggestion.innerText; // Set input to selected city
+                suggestions.innerHTML = ""; // Clear suggestions
+                getResults(city.name); // Fetch weather for selected city
+            });
+            suggestions.appendChild(suggestion);
         });
-        suggestions.appendChild(suggestion);
-    });
+    }
 }
 
 function setQuery(evt) {
