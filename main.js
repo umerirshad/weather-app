@@ -4,7 +4,48 @@ const api = {
   }
 
 const searchbox = document.querySelector('.search-box');
+const suggestions = document.querySelector('.suggestions');
+
+searchbox.addEventListener('input', fetchCities);
 searchbox.addEventListener('keypress', setQuery);
+
+// Set current date when the page loads
+document.addEventListener("DOMContentLoaded", () => {
+    let now = new Date();
+    let date = document.querySelector('.location .date');
+    date.innerText = dateBuilder(now);
+});
+
+function fetchCities() {
+    const query = searchbox.value;
+    if (query.length > 0) {
+        fetch(`https://api.teleport.org/api/cities/?search=${query}`)
+            .then(response => response.json())
+            .then(data => {
+                showSuggestions(data._embedded["city:search-results"]);
+            })
+            .catch(error => {
+                console.error("Error fetching city suggestions:", error);
+            });
+    } else {
+        suggestions.innerHTML = ""; // Clear suggestions if the input is empty
+    }
+}
+
+function showSuggestions(cities) {
+    suggestions.innerHTML = ""; // Clear previous suggestions
+    cities.forEach(city => {
+        const suggestion = document.createElement('div');
+        suggestion.innerText = city.matching_full_name;
+        suggestion.classList.add('suggestion-item');
+        suggestion.addEventListener('click', () => {
+            searchbox.value = city.matching_full_name; // Set input to selected city
+            suggestions.innerHTML = ""; // Clear suggestions
+            getResults(city._embedded["city:item"].name); // Fetch weather for selected city
+        });
+        suggestions.appendChild(suggestion);
+    });
+}
 
 function setQuery(evt) {
   if (evt.key === "Enter") {
