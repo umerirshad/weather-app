@@ -19,7 +19,7 @@ document.addEventListener("DOMContentLoaded", () => {
 function fetchCities() {
     const query = searchbox.value;
     if (query.length > 0) {
-        fetch(`https://api.teleport.org/api/cities/?search=${query}`)
+        fetch(`${api.base}find?q=${query}&appid=${api.key}&units=metric`)
             .then(response => response.json())
             .then(data => {
                 showSuggestions(data._embedded["city:search-results"]);
