@@ -7,16 +7,23 @@ const searchbox = document.querySelector('.search-box');
 searchbox.addEventListener('keypress', setQuery);
 
 function setQuery(evt) {
-  if (evt.keyCode == 13) {
+  if (evt.key === "Enter") {
     getResults(searchbox.value);
   }
 }
 
-function getResults (query) {
+function getResults(query) {
   fetch(`${api.base}weather?q=${query}&units=metric&APPID=${api.key}`)
-    .then(weather => {
-      return weather.json();
-    }).then(displayResults);
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('City not found');
+      }
+      return response.json();
+    })
+    .then(displayResults)
+    .catch(error => {
+      alert(error.message); // Alert the user in case of an error
+    });
 }
 
 function displayResults (weather) {
