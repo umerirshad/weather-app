@@ -6,14 +6,6 @@ const api = {
 const searchbox = document.querySelector('.search-box');
 searchbox.addEventListener('keypress', setQuery);
 
-// Set current date when the page loads
-document.addEventListener("DOMContentLoaded", () => {
-    let now = new Date();
-    let date = document.querySelector('.location .date');
-    date.innerText = dateBuilder(now);
-});
-
-
 function setQuery(evt) {
   if (evt.key === "Enter") {
     getResults(searchbox.value);
@@ -52,7 +44,7 @@ function displayResults (weather) {
   hilow.innerText = '${Math.round(weather.main.temp_min)}°c / ${Math.round(weather.main.temp_max)}°c';
 }
 
-/*function dateBuilder (d) {
+function dateBuilder (d) {
   let months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
   let days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
@@ -62,4 +54,4 @@ function displayResults (weather) {
   let year = d.getFullYear();
 
   return '${day} ${date} ${month} ${year}';
-}*/
+}
